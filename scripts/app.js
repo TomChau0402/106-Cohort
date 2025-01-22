@@ -13,10 +13,46 @@ function saveTask()
     let taskToSave = new Task (title,description,color,date,status,budget);
     console.log(taskToSave);
     //save to server
-
+    $.ajax({
+        type: "post",
+        url:"http://fsdiapi.azurewebsites.net/api/tasks/",
+        data:JSON.stringify(taskToSave),
+        conentType: "application/json",
+        success: function(response) {
+        console.log(response);
+            
+        },
+        error: function (error) {
+        console.log(error);    
+        }
+    })
     //display the data recieved from server
     displayTask(taskToSave);
 }
+function loadTask() {
+    $.ajax({
+        type: "GET",
+        url:"http://fsdiapi.azurewebsites.net/api/tasks",
+        success: function (response) {
+            console.log(response);
+            let data =JSON.parse(response);
+            console.log(data);
+    },
+        error: function (error) {
+            console.log(error);
+            //console.log only those elements that wer created by you on the server
+            for (let i = 0;i < data.lengt;i++) {
+               let task = data[i] ;
+               if(task.name =="Tom54"){
+                displayTask(task);
+                console.log(task);
+               }
+                
+            }
+                
+            }
+        })
+    }    
 
 function displayTask(task)
 {
@@ -55,7 +91,7 @@ function testFuction()
 function init(){
     console.log('init');
     //load data
-
+    loadTask()
     //hook events
     $("#btnSave").click(saveTask);
 }
